@@ -1,25 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
+import './App.css';
+import { ThemeProvider }  from '@material-ui/styles';
+import customTheme from './assets/theme/custom-theme';
+import Header from './components/header/header';
+import Homepage from './components/homepage/homepage';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorComponent from './shared/error-boundary';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+    <ErrorBoundary FallbackComponent={ErrorComponent}>
+    <ThemeProvider theme={customTheme}>
+      <Header></Header>
+      <Homepage></Homepage>
+    </ThemeProvider>
+    </ErrorBoundary>
+    </Provider>
   );
 }
 
