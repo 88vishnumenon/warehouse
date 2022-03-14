@@ -14,6 +14,7 @@ import { getArticles, getProducts } from "../../services/services";
 import { useDispatch, useSelector } from "react-redux";
 import { Article, Product, ProductArticle } from "../../types/types";
 import { Warehouse } from "../../store/reducer";
+import { hideLoading, showLoading } from "../../store/actionCreators";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -61,6 +62,8 @@ const ProductList: React.FC<{}> = (props) => {
     const warehouseProductList: Array<Product> = useSelector<Warehouse, Warehouse["products"]>((state => state.products));
     const warehouseArticleList: Array<Article> = useSelector<Warehouse, Warehouse["articles"]>((state => state.articles));
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
+    const loading: boolean = useSelector<Warehouse, Warehouse["loading"]>((state => state.loading));
+
 
 
     
@@ -73,13 +76,16 @@ const ProductList: React.FC<{}> = (props) => {
         getProductsandArticles();
         return function cleanup() {
             // clean up code
+            dispatch(hideLoading());
             source.cancel("axios request cancelled");
         };
     }, [])
 
 
     useEffect(() => {
-        mapProductArticle(warehouseProductList, warehouseArticleList)
+        if (warehouseProductList.length && warehouseArticleList.length ){
+            mapProductArticle(warehouseProductList, warehouseArticleList)
+        }
     }, [warehouseProductList, warehouseArticleList]);
 
 
@@ -87,6 +93,7 @@ const ProductList: React.FC<{}> = (props) => {
     const getProductsandArticles = async () =>{
    // if we have already the data for products the dont fetch again
         if ((!warehouseProductList.length || !warehouseArticleList.length) || error){
+            dispatch(showLoading());
             getProducts(dispatch, source.token);
             getArticles(dispatch, source.token);
         }
@@ -128,7 +135,7 @@ const ProductList: React.FC<{}> = (props) => {
      // To do: change aria controls and id name
     return (
         <section  className={classes.productListWrapper}>
-            {productArticleList.length > 0 && productArticleList.map((product: ProductArtcile,index:number)=>{
+            {(!loading && !error && productArticleList.length>0) && productArticleList.map((product: ProductArtcile,index:number)=>{
                return  <Accordion  key={index}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -151,7 +158,7 @@ const ProductList: React.FC<{}> = (props) => {
                 </Accordion>
             })}
 
-            {(!productArticleList.length && !error) &&  <section className={classes.loadingWrapper}>
+            {(loading || (!productArticleList.length && !error) ) &&  <section className={classes.loadingWrapper}>
                 <CircularProgress />
 
             </section>}

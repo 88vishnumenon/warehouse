@@ -17,6 +17,7 @@ declare module "@mui/material/styles/createPalette" {
       ikeaBlue: string;
       greyLight:string;
       greyMedium:string;
+      lightWheat:string;
     };
   }
   interface PaletteOptions {
@@ -24,7 +25,8 @@ declare module "@mui/material/styles/createPalette" {
       darkBlack: "#111111";
       ikeaBlue: "#0058A3";
       greyLight: "#e9ecef";
-      greyMedium:"#67748e"
+      greyMedium: "#67748e";
+      lightWheat: "#fafafa";
     };
   }
 }
@@ -40,6 +42,7 @@ const customTheme = createTheme({
       ikeaBlue: "#0058A3",
       greyLight: "#e9ecef",
       greyMedium: "#67748e",
+      lightWheat: "#fafafa",
     },
   },
   mixins: {

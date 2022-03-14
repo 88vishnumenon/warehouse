@@ -3,18 +3,23 @@
 import React, { useEffect, useState } from "react";
 
 import { makeStyles } from '@material-ui/styles';
-import { Autocomplete, Button, TextField, Theme } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Theme } from '@mui/material';
+import TextField from '@mui/material/TextField';
+
 import { useDispatch, useSelector } from "react-redux";
 import { Warehouse } from "../../store/reducer";
 import { Product, Article } from "../../types/types";
 import axios from "axios";
 import { getProducts, getArticles, sellProduct, sellArticles } from "../../services/services";
+import { positions } from "@mui/system";
+import { hideLoading, showLoading } from "../../store/actionCreators";
 
 const useStyles = makeStyles((theme: Theme) => ({
 
     registerSaleWrapper:{
         display:"flex",
-        justifyContent:"center"
+        justifyContent:"center",
+        position:"relative"
     },
 
     registerSaleForm:{
@@ -23,15 +28,36 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     saleInputs:{
-        marginBottom: "10px !important"   // to be changed
+        marginBottom: "20px !important"   // to be changed
     },
     error: {
         color: theme.palette.ikea.ikeaBlue,
         textAlign: "center"
     },
     submitBtn:{
-        backgroundColor:"#0058A3 !important"     // to be changed
-    }
+        backgroundColor:"#0058A3 !important",
+        "&:disabled": {
+            backgroundColor: "#fafafa !important"  // to be changed
+        }     
+    },
+    input: {
+        color: "#2EFF22",
+    },
+
+    loadingWrapper:{
+        position:"absolute",
+        width:"100%",
+        height:"100%",
+        border:"1px solid red",
+        backgroundColor:"#c4c4c4",  // to be changed
+        opacity:0.1
+    },
+    loadingCircleWrapper: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "40%"
+    },
 
 })
 )
@@ -52,7 +78,7 @@ const RegisterSale: React.FC<{}> = (props) => {
         label:"",
         id:""
     }
-    const [types, setTypes] = useState<Array<string>>(["Products","Articles"]);
+    const [types, setTypes] = useState<Array<string>>([]);
     const [itemTypes, setItemTypes] = useState<Array<SaleItem>>([]);
     const [selectedType, setSelectedType] = useState<string>('');
     const [selectedItem, setSelectedItem] = useState<SaleItem >(defaultSelectedItem);
@@ -64,6 +90,7 @@ const RegisterSale: React.FC<{}> = (props) => {
     //state definition
     const warehouseProductList: Array<Product> = useSelector<Warehouse, Warehouse["products"]>((state => state.products));
     const warehouseArticleList: Array<Article> = useSelector<Warehouse, Warehouse["articles"]>((state => state.articles));
+    const loading: boolean = useSelector<Warehouse, Warehouse["loading"]>((state => state.loading));
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
 
 
@@ -71,15 +98,17 @@ const RegisterSale: React.FC<{}> = (props) => {
     //effects
     useEffect(() => {
         getProductsandArticles();
+        setTypes(["Products", "Articles"]);
         return function cleanup() {
             // clean up code
+            dispatch(hideLoading())
             source.cancel("axios request cancelled");
         };
     }, [])
 
 
     useEffect(() => {
-        setSelectedItem(defaultSelectedItem);
+       // setSelectedItem(defaultSelectedItem);
         const itemList: Array<SaleItem> = [];
         if (selectedType === "Products") {
             warehouseProductList.forEach((product: Product) => {
@@ -103,9 +132,16 @@ const RegisterSale: React.FC<{}> = (props) => {
         setItemTypes(itemList);
     }, [selectedType])
 
+
+   //test
+    useEffect(() => {
+        console.log("selectedItem",selectedItem);
+    }, [selectedItem])
+
     //helper function
     const registerSale = ()=>{
           console.log(selectedItem);
+        dispatch(showLoading())
         if (selectedType === "Products"){
             sellProduct(dispatch, source.token, selectedItem.id,+amount) 
         }
@@ -150,9 +186,9 @@ const RegisterSale: React.FC<{}> = (props) => {
                     loading={!warehouseArticleList.length && !error}
                     renderInput={(params) => <TextField {...params} label="Items" />}
                 />
-
+{/* 
                 <TextField
-                    id="sale-number"
+                    id="outlined-number"
                     label="Amount"
                     className={classes.saleInputs}
                     value={amount}
@@ -160,14 +196,36 @@ const RegisterSale: React.FC<{}> = (props) => {
                     onChange={(event) => setAmount(event.target.value)}
                     InputLabelProps={{
                         shrink: true,
-
                     }}
+                    InputProps={{ className: classes.textInput }}
+
                     
+                /> */}
+
+
+                <TextField
+                    id="outlined-number"
+                    variant="outlined"
+                    className={classes.saleInputs}
+                    label="Amount"
+                    value={amount}
+                    type="amount"
+                    onChange={(event) => setAmount(event.target.value)}
+                    inputProps={{
+                        className: classes.input
+                    }}
                 />
 
-                <Button className={classes.submitBtn} variant="contained" onClick={registerSale}>Submit</Button>
+                <Button className={classes.submitBtn} disabled={!selectedType || !selectedItem.label || !amount} variant="contained" onClick={registerSale}>Submit</Button>
 
             </form>}
+
+            {(loading || error) && <section className={classes.loadingWrapper}>
+                <section className={classes.loadingCircleWrapper}>
+                    <CircularProgress />
+
+                </section>
+            </section>}
 
             {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
 

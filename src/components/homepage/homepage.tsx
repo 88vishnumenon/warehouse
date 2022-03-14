@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
      //   border: "1px solid red",
          display: "flex",
          flexDirection: "row",
+         maxWidth:"80%"
 
      },
 
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
           borderRadius:4,
           border:"1px solid #eee",
           backgroundColor:"#fafafa",
-          height:theme.mixins.pxToRem(60),
+          height:theme.mixins.pxToRem(40),
           width: theme.mixins.pxToRem(200),
          marginRight: theme.mixins.pxToRem(8),
          display:"flex",
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
          transition:"all 0.2s ease-in-out",
          lineHeight:theme.mixins.pxToRem(24),
          color:theme.palette.ikea.ikeaBlue,
+         padding:theme.mixins.pxToRem(10),
          '&:hover': {
            // transform: "translateY(-30px)",
            // boxShadow: "0 4px 17px rgb(0 0 0 / 35 %)"

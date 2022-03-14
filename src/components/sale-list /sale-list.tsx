@@ -10,6 +10,7 @@ import { getSales } from "../../services/services";
 import { Warehouse } from "../../store/reducer";
 import { Sale, TableData } from "../../types/types";
 import WareHouseTable from "../table/table";
+import { hideLoading, showLoading } from "../../store/actionCreators";
 
 const useStyles = makeStyles((theme: Theme) => ({
     loadingWrapper: {
@@ -38,6 +39,7 @@ const SaleList: React.FC<{}> = (props) => {
 
     const warehouseSaleList: Array<Sale> = useSelector<Warehouse, Warehouse["sales"]>((state => state.sales));
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
+    const loading: boolean = useSelector<Warehouse, Warehouse["loading"]>((state => state.loading));
 
 
 
@@ -45,9 +47,11 @@ const SaleList: React.FC<{}> = (props) => {
     useEffect(() => {
     // if we have already the data for sales the dont fetch again
         if (!warehouseSaleList.length || error)
+        dispatch(showLoading());
         getSales(dispatch, source.token);
         return function cleanup() {
             // clean up code
+            dispatch(hideLoading());
             source.cancel("axios request cancelled");
         };
     }, [])
@@ -73,9 +77,8 @@ const SaleList: React.FC<{}> = (props) => {
     return (
         <section  >
             {saleList.length>0 &&  <WareHouseTable headers={saleHeaders} data={saleList}></WareHouseTable>}
-            {(!saleList.length &&  !error) && <section className={classes.loadingWrapper}>
+            {(loading) && <section className={classes.loadingWrapper}>
                 <CircularProgress />
-
             </section>}
 
             {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}

@@ -10,6 +10,7 @@ import { Article, TableData } from "../../types/types";
 import { Warehouse } from "../../store/reducer";
 import WareHouseTable from "../table/table";
 import { getArticles } from "../../services/services";
+import { hideLoading, showLoading } from "../../store/actionCreators";
 
 const useStyles = makeStyles((theme: Theme) => ({
     loadingWrapper: {
@@ -40,16 +41,19 @@ const ArticleList: React.FC<{}> = (props) => {
     //state definition
     const warehouseArticleList: Array<Article> = useSelector<Warehouse, Warehouse["articles"]>((state => state.articles));
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
+    const loading: boolean = useSelector<Warehouse, Warehouse["loading"]>((state => state.loading));
 
 
    //effects
     useEffect(() => {
         // if we have already the data for articles the dont fetch again
         if (!warehouseArticleList.length || error){
+            dispatch(showLoading());
             getArticles(dispatch,source.token)
         }
         return function cleanup() {
             // clean up code
+            dispatch(hideLoading());
             source.cancel("axios request cancelled");
         };
     }, [warehouseArticleList]);
@@ -75,7 +79,7 @@ const ArticleList: React.FC<{}> = (props) => {
     return (
         <section  >
             {articleList.length>0 && <WareHouseTable headers={articleHeaders} data={articleList}></WareHouseTable>}
-            {(!articleList.length &&  !error) && <section className={classes.loadingWrapper}>
+            {(loading) && <section className={classes.loadingWrapper}>
                 <CircularProgress />
 
             </section>}
