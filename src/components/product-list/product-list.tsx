@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         display:"flex",
         justifyContent:"center",
         alignItems:"center",
-        height:"40%"
+        height:"20%"
     },
 
     error:{
@@ -74,6 +74,7 @@ const ProductList: React.FC<{}> = (props) => {
     //effects
     useEffect(() => {
         getProductsandArticles();
+
         return function cleanup() {
             // clean up code
             dispatch(hideLoading());
@@ -83,6 +84,7 @@ const ProductList: React.FC<{}> = (props) => {
 
 
     useEffect(() => {
+      //  console.log("@@@@@@@", warehouseProductList);
         if (warehouseProductList.length && warehouseArticleList.length ){
             mapProductArticle(warehouseProductList, warehouseArticleList)
         }
@@ -110,7 +112,7 @@ const ProductList: React.FC<{}> = (props) => {
             }
             ProductArtcileDetails.push(productArticle);
         })
-        console.log("!@!@", ProductArtcileDetails);
+       // console.log("!@!@", ProductArtcileDetails);
         setProductArticleList(ProductArtcileDetails)
     }
 
@@ -141,6 +143,7 @@ const ProductList: React.FC<{}> = (props) => {
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
+                        data-testid="product-accordian"
                     >
                         <Typography>{product.name}</Typography>
                     </AccordionSummary>
@@ -148,6 +151,7 @@ const ProductList: React.FC<{}> = (props) => {
                         {product.articles.map((productarticle,index)=>{
                             return (<Chip
                             className={classes.articleChip}
+                                style={{ backgroundColor: '#0058A3',color: "white" }} 
                                 label={setarticleLabel(productarticle)} 
                                 key={index}
                             />

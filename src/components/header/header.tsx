@@ -8,7 +8,6 @@ import { Theme } from '@mui/material';
 const useStyles = makeStyles((theme: Theme) => ({
      header:{
          width:"100%",
-         height:"7%",
          backgroundColor:theme.palette.ikea.ikeaBlue
 
      },

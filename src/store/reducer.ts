@@ -1,12 +1,12 @@
 import { Article, Product, Sale } from "../types/types";
 import update from "react-addons-update";
-export interface Warehouse{
-    products:Array<Product>;
-    articles:Array<Article>;
-    sales:Array<Sale>,
-    error:boolean
-    loading:boolean
-
+export interface Warehouse {
+  products: Array<Product>;
+  articles: Array<Article>;
+  sales: Array<Sale>;
+  error: boolean;
+  loading: boolean;
+  stockUpdated: boolean;
 }
 
 export interface Action {
@@ -19,7 +19,8 @@ export const WarehouseIntialState = {
   articles:[],
   sales:[],
   error:false,
-  loading:false
+  loading:false,
+  stockUpdated:false
 };
 
 
@@ -50,29 +51,44 @@ export const reducer = (state: Warehouse = WarehouseIntialState, action: Action)
         loading: false,
       };
     case "UPDATE_ARTICLES":
-       const {id,amountInStock} = action.payload;
-       const articleList = state.articles;
-       articleList.forEach((article)=>{
-           if(id === article.id){
-             article.amountInStock = amountInStock;
-           }
-       })
-   return update(state, {
-     articles: { $set: articleList },
-     loading:{$set:false},
-     error:{$set:false}
-   });
+      // const { id, amountInStock } = action.payload;
+      // const articleList = state.articles;
+      // articleList.forEach((article) => {
+      //   if (id === article.id) {
+      //     article.amountInStock = amountInStock;
+      //   }
+      // });
+      // return update(state, {
+      //   articles: { $set: articleList },
+      //   loading: { $set: false },
+      //   error: { $set: false },
+      //   stockUpdated: { $set: true },
+      // });
+
+    case "UPDATE_PRODUCTS":
+        //  // logic for updating inventory
+        //  const { id, amountInStock } = action.payload;
+        //  // this is a  article array
+         const aricles = state.articles;
+               return {
+                 ...state,
+                 stockUpdated:true,
+                 loading:false
+               };;
+
     case "SHOW_LOADING":
       return {
         ...state,
         loading: true,
         error: false,
+        stockUpdated: false,
       };
     case "HIDE_LOADING":
       return {
         ...state,
         loading: false,
         error: false,
+        stockUpdated: false,
       };
 
     case "ERROR":

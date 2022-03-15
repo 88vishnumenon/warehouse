@@ -56,7 +56,7 @@ const ArticleList: React.FC<{}> = (props) => {
             dispatch(hideLoading());
             source.cancel("axios request cancelled");
         };
-    }, [warehouseArticleList]);
+    }, []);
     useEffect(() => {
         console.log("warehouseArticleList", warehouseArticleList);
         let articleDetails: Array<Array<TableData>> = [];
@@ -69,6 +69,10 @@ const ArticleList: React.FC<{}> = (props) => {
         setArticleList(articleDetails);
     }, [warehouseArticleList]);
 
+    useEffect(() => {
+        console.log("articleList", articleList);
+    }, [articleList]);
+
     //helperfunctions
     const setArticle = (articleAttr: string | number) => {
         return {
@@ -78,12 +82,12 @@ const ArticleList: React.FC<{}> = (props) => {
 
     return (
         <section  >
-            {articleList.length>0 && <WareHouseTable headers={articleHeaders} data={articleList}></WareHouseTable>}
+            {articleList.length>0 && <WareHouseTable data-testid='article-table' headers={articleHeaders} data={articleList}></WareHouseTable>}
             {(loading) && <section className={classes.loadingWrapper}>
                 <CircularProgress />
 
             </section>}
-            {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
+            {error && <h1 data-testid="error" className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
 
             </section>
 

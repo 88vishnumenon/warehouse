@@ -1,7 +1,4 @@
 import React from "react";
-import { TableData } from "../../types/types";
-import { makeStyles } from '@material-ui/styles';
-import { Theme } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,6 +6,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+
+import { TableData } from "../../types/types";
+
+
 
 
 export interface WarehouseTableProps {
@@ -24,7 +25,7 @@ const WareHouseTable: React.FC<WarehouseTableProps> = (props) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table aria-label="warehouse table">
+            <Table aria-label="warehouse table" data-testid='table'>
                 <TableHead>
                     <TableRow>
                         {headers.map((value:string,index:number)=>{

@@ -1,18 +1,18 @@
 
 
 import React, { useEffect, useState } from "react";
-
 import { makeStyles } from '@material-ui/styles';
 import { Autocomplete, Button, CircularProgress, Theme } from '@mui/material';
 import TextField from '@mui/material/TextField';
-
-import { useDispatch, useSelector } from "react-redux";
-import { Warehouse } from "../../store/reducer";
-import { Product, Article } from "../../types/types";
+import { useDispatch, useSelector } from "react-redux"; 
 import axios from "axios";
+
+import { Warehouse } from "../../store/reducer";
+import { Product, Article, ProductArticle } from "../../types/types";
 import { getProducts, getArticles, sellProduct, sellArticles } from "../../services/services";
-import { positions } from "@mui/system";
 import { hideLoading, showLoading } from "../../store/actionCreators";
+import toast from "../../shared/toast";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
 
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     submitBtn:{
         backgroundColor:"#0058A3 !important",
+        width:"98%",
         "&:disabled": {
             backgroundColor: "#fafafa !important"  // to be changed
         }     
@@ -44,19 +45,18 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: "#2EFF22",
     },
 
-    loadingWrapper:{
-        position:"absolute",
-        width:"100%",
-        height:"100%",
-        border:"1px solid red",
-        backgroundColor:"#c4c4c4",  // to be changed
-        opacity:0.1
-    },
+
     loadingCircleWrapper: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "40%"
+        height: "40%",
+        margin:7
+    },
+    btnLoadingWrapper:{
+     width:"100%",
+     display:"flex",
+     flexDirection:"row"
     },
 
 })
@@ -92,6 +92,8 @@ const RegisterSale: React.FC<{}> = (props) => {
     const warehouseArticleList: Array<Article> = useSelector<Warehouse, Warehouse["articles"]>((state => state.articles));
     const loading: boolean = useSelector<Warehouse, Warehouse["loading"]>((state => state.loading));
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
+    const warehouseStockUpdated: boolean = useSelector<Warehouse, Warehouse["stockUpdated"]>((state => state.stockUpdated));
+
 
 
 
@@ -105,7 +107,12 @@ const RegisterSale: React.FC<{}> = (props) => {
             source.cancel("axios request cancelled");
         };
     }, [])
-
+    useEffect(() => {
+        if (warehouseStockUpdated){
+            resetForm();
+            toast.success("Sucess");  
+        }
+    }, [warehouseStockUpdated])
 
     useEffect(() => {
        // setSelectedItem(defaultSelectedItem);
@@ -139,16 +146,26 @@ const RegisterSale: React.FC<{}> = (props) => {
     }, [selectedItem])
 
     //helper function
-    const registerSale = ()=>{
-          console.log(selectedItem);
-        dispatch(showLoading())
-        if (selectedType === "Products"){
-            sellProduct(dispatch, source.token, selectedItem.id,+amount) 
-        }
-        else{
-            sellArticles(dispatch, source.token, selectedItem.id, +amount) 
 
-         }
+
+    const resetForm = () =>{
+        setSelectedType("");
+        setSelectedItem(defaultSelectedItem);
+        setAmount("");
+    }
+
+    const validateSale = () =>{
+        let articlesAvailable = true;
+        const selectedProduct:Product[]= warehouseProductList.filter((product:Product)=> product.id === selectedItem.id);
+        selectedProduct[0].articles.forEach((productArticle: ProductArticle)=>{
+            const selectedArticle = warehouseArticleList.filter((article: Article) => article.id === productArticle.id);
+            if (+amount * productArticle.amountRequired > selectedArticle[0].amountInStock){
+                articlesAvailable = false;
+                   return;
+            }
+        })
+        return articlesAvailable?true:false;
+       // return true;
     }
 
 
@@ -161,11 +178,28 @@ const RegisterSale: React.FC<{}> = (props) => {
         }
 
     }
+    const registerSale = () => {
+        // create a  validate sale function
+        if (validateSale()){
+            dispatch(showLoading())
+            if (selectedType === "Products") {
+                sellProduct(dispatch, source.token, selectedItem.id, amount)
+            }
+            else {
+                sellArticles(dispatch, source.token, selectedItem.id, +amount)
+
+            }
+        }
+        else{
+            toast.error("There is Less Articles in the Warehouse");   
+        }
+     
+    }
 
       // to do validations
     return (
         <section className={classes.registerSaleWrapper} >
-        { !error &&  <form className={classes.registerSaleForm}>
+        {  <form className={classes.registerSaleForm}>
             <Autocomplete
                 id="sale-types"
                 inputValue={selectedType}
@@ -173,6 +207,7 @@ const RegisterSale: React.FC<{}> = (props) => {
                 options={types}
                 className={classes.saleInputs}
                 sx={{ width: 300 }}
+                disabled={loading}
                 renderInput={(params) => <TextField {...params} label="Type" />}
             />
 
@@ -183,6 +218,7 @@ const RegisterSale: React.FC<{}> = (props) => {
                     options={itemTypes}
                     className={classes.saleInputs}
                     sx={{ width: 300 }}
+                    disabled={loading}
                     loading={!warehouseArticleList.length && !error}
                     renderInput={(params) => <TextField {...params} label="Items" />}
                 />
@@ -210,24 +246,23 @@ const RegisterSale: React.FC<{}> = (props) => {
                     label="Amount"
                     value={amount}
                     type="amount"
+                    disabled={loading}
                     onChange={(event) => setAmount(event.target.value)}
                     inputProps={{
                         className: classes.input
                     }}
                 />
-
-                <Button className={classes.submitBtn} disabled={!selectedType || !selectedItem.label || !amount} variant="contained" onClick={registerSale}>Submit</Button>
-
+                <section className={classes.btnLoadingWrapper}>
+                <Button className={classes.submitBtn} disabled={!selectedType || !selectedItem.label || !amount || loading} variant="contained" onClick={registerSale}>Submit</Button>
+                   { loading && <section className={classes.loadingCircleWrapper}>
+                        <CircularProgress size={25} />
+                    </section>}
+                </section>
             </form>}
 
-            {(loading || error) && <section className={classes.loadingWrapper}>
-                <section className={classes.loadingCircleWrapper}>
-                    <CircularProgress />
+    
 
-                </section>
-            </section>}
-
-            {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
+            {/* {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>} */}
 
             </section>
 

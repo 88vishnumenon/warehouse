@@ -40,9 +40,9 @@ export const getSales = (dispatch: Dispatch<Action>, cancelToken: any) => {
     });
 };
 
-export const sellProduct = (dispatch: Dispatch<Action>, cancelToken: any,id:string,amountToSubtract:number) => {
+export const sellProduct = (dispatch: Dispatch<Action>, cancelToken: any,productId:string,amountSold:string) => {
   axios
-    .patch(`/products/${id}`, { cancelToken, amountToSubtract})
+    .post(`/sales/`, { cancelToken, productId, amountSold })
     .then((response) => {
       dispatch(updateProduct(response.data));
     })
