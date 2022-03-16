@@ -55,11 +55,6 @@ export const MOCK_STATE = {
 
 };
 
-//mock-apis
-// const sellProductMock= jest.fn(() =>{})
-// jest.mock('../../../services/services', () => ({
-//     sellProduct: sellProductMock
-// }));
 
 const mockSellProduct = jest.fn();
 
@@ -140,39 +135,5 @@ describe("<RegisterSale /> test utils", () => {
     })
 
 
-    // test("should api call be made on submit button", async () => {
-    //     const { findByTestId, getByTestId } = renderRegisterSaleList(MOCK_STATE);
-    //     const saleType = await (await findByTestId("sale-types"))
-    //     const saleItem = (await findByTestId("sale-item-types"));
-    //     const amount = await (await findByTestId("amount")).querySelector('.MuiInputBase-input') as HTMLInputElement;
-    //     const submitBtn = await findByTestId("submit-btn");
-
-
-    //     // select value in autocomplete products
-    //     const typeInput = await getByTestId("sale-types").querySelector('.MuiInputBase-input') as HTMLInputElement;
-    //     saleType.focus();
-
-    //     fireEvent.change(typeInput, { target: { value: 'p' } })
-    //     fireEvent.keyDown(saleType, { key: 'ArrowDown' })
-    //     fireEvent.keyDown(saleType, { key: 'Enter' })
-
-    //     //select value in autocomplete Items
-    //     const typeItem = await getByTestId("sale-item-types").querySelector('.MuiInputBase-input') as HTMLInputElement;
-    //     saleItem.focus();
-
-    //     fireEvent.change(typeItem, { target: { value: 'd' } })
-    //     fireEvent.keyDown(saleItem, { key: 'ArrowDown' })
-    //     fireEvent.keyDown(saleItem, { key: 'Enter' })
-
-
-    //     fireEvent.change(amount, { target: { value: 10 } });
-
-    //     fireEvent.click(submitBtn);
-    //     const spy = jest.spyOn("../../../services/services", "sellProduct");
-
-    //     expect(spy).toHaveBeenCalled();
-
-
-
-    // })
+ 
 })

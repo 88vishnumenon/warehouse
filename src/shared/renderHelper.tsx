@@ -7,8 +7,7 @@ import { createStore } from "redux";
 import customTheme from "../assets/theme/custom-theme";
 
 
-// can improve
-// 1.change redux state from any to type
+
 export const renderWithProviders = (
     component: JSX.Element,
     reduxState: any

@@ -55,10 +55,4 @@ describe("<ArticleList /> test utils", () => {
         expect(articleList).toBeInTheDocument();
     })
 
-    // test("should error text shown on error ", async () => {
-    //     const { findByTestId, asFragment } = renderArticleList(ERROR_MOCK_STATE);
-    //     expect(asFragment()).toMatchSnapshot();
-    //     const error = await findByTestId('error');
-    //     expect(error).toBeInTheDocument();
-    // })
 })
