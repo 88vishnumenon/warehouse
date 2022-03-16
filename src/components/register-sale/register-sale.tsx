@@ -101,8 +101,7 @@ const RegisterSale: React.FC<{}> = (props) => {
         setTypes(["Products", "Articles"]);
         return function cleanup() {
             // clean up code
-            dispatch(hideLoading())
-            source.cancel("axios request cancelled");
+            dispatch(hideLoading());
         };
     }, [])
     useEffect(() => {
@@ -139,16 +138,7 @@ const RegisterSale: React.FC<{}> = (props) => {
     }, [selectedType])
 
 
-    useEffect(() => {
-        if(error){
-            toast.error("There seems to be issue in Making the Sale!!! Can You please try Again.");   
-        }
-    }, [error])
-
-
-
-
-    //helper function
+  //helper function
     const resetForm = () =>{
         setSelectedType("");
         setSelectedItem(defaultSelectedItem);

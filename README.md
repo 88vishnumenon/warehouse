@@ -7,6 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the project directory, you can run:
 
 ### `npm start`
+### `start the node api  in port 7000 to get the data from the services `
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -19,28 +20,19 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `guidelines`
+- All components are functional components with react hooks.
+- Redux is used for managing the state of the application.
+- jest and react testing library are used to write the unit test cases for few of the components.  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `improvemnets`
+- As mentioned in the question in my email as per my understanding of requirements  the sale should be based on amountRequired and amountInStock.In the current inventory the articles  is always less than amount required hence sale is not possible.When i tried updating the articles using the patch call the amountInStock was not getting updated.Hence this functionality is not possible now.In order to showcase how i would have approched the same i have added seeling of articles in the Sale section.Here when a aricle is  sold a patch article request is called and with aountToSubtract .When the request is sucessfull then corresponding state is updated and this updates the article inventory.This was impelmented to showcase how this usecase can be approached.
 
-### `npm run eject`
+- All the service end points could not be used.But with more time all diffrent end points could be integrated as diffrent menu and user operations.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Unit test cases have been implemented for few of the components to showcase how this will be approached.The coverage of unit test caees can be improved.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
