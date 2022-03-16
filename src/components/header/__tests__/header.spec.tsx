@@ -26,7 +26,4 @@ describe("<Header /> test utils", () => {
         expect(asFragment()).toMatchSnapshot();
     });
 
-
-
-
 })

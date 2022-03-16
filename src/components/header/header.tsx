@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 import { makeStyles } from '@material-ui/styles';
@@ -13,7 +11,8 @@ const useStyles = makeStyles((theme: Theme) => ({
      },
      logo:{
          height: theme.mixins.pxToRem(50),
-         width: theme.mixins.pxToRem(100)
+         width: theme.mixins.pxToRem(100),
+         paddingLeft:theme.mixins.pxToRem(10)
      }
 })
 );
@@ -25,10 +24,9 @@ const Header: React.FC<{}> = (props) => {
      //define constants
     const classes = useStyles();
 
-
     return (
         <section className={classes.header} >
-            <img src="/assets/images/logo.png" className={classes.logo}/>
+            <img src="/assets/images/ikea-logo.svg" className={classes.logo}/>
         </section>
 
     );

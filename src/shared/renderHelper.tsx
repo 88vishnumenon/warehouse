@@ -13,7 +13,6 @@ export const renderWithProviders = (
     component: JSX.Element,
     reduxState: any
 ) => {
-    console.log("reduxState", reduxState);
     const UI = (
         <ThemeProvider theme={customTheme}>
             {component}

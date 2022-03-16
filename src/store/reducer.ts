@@ -16,16 +16,17 @@ export interface Action {
 
 export const WarehouseIntialState = {
   products: [],
-  articles:[],
-  sales:[],
-  error:false,
-  loading:false,
-  stockUpdated:false
+  articles: [],
+  sales: [],
+  error: false,
+  loading: false,
+  stockUpdated: false,
 };
 
-
-
-export const reducer = (state: Warehouse = WarehouseIntialState, action: Action) => {
+export const reducer = (
+  state: Warehouse = WarehouseIntialState,
+  action: Action
+) => {
   switch (action.type) {
     case "ADD_PRODUCTS":
       return {
@@ -51,30 +52,29 @@ export const reducer = (state: Warehouse = WarehouseIntialState, action: Action)
         loading: false,
       };
     case "UPDATE_ARTICLES":
-      // const { id, amountInStock } = action.payload;
-      // const articleList = state.articles;
-      // articleList.forEach((article) => {
-      //   if (id === article.id) {
-      //     article.amountInStock = amountInStock;
-      //   }
-      // });
-      // return update(state, {
-      //   articles: { $set: articleList },
-      //   loading: { $set: false },
-      //   error: { $set: false },
-      //   stockUpdated: { $set: true },
-      // });
+      const { id, amountInStock } = action.payload;
+      const articleList = state.articles;
+      articleList.forEach((article) => {
+        if (id === article.id) {
+          article.amountInStock = amountInStock;
+        }
+      });
+      return update(state, {
+        articles: { $set: articleList },
+        loading: { $set: false },
+        error: { $set: false },
+        stockUpdated: { $set: true },
+      });
 
     case "UPDATE_PRODUCTS":
-        //  // logic for updating inventory
-        //  const { id, amountInStock } = action.payload;
-        //  // this is a  article array
-         const aricles = state.articles;
-               return {
-                 ...state,
-                 stockUpdated:true,
-                 loading:false
-               };;
+      // todo:
+      // logic for updating inventory should be added here.Now as we dont have enough articles to sale the changes are not added here.
+      const aricles = state.articles;
+      return {
+        ...state,
+        stockUpdated: true,
+        loading: false,
+      };
 
     case "SHOW_LOADING":
       return {
@@ -92,7 +92,6 @@ export const reducer = (state: Warehouse = WarehouseIntialState, action: Action)
       };
 
     case "ERROR":
-      console.log("ERROR", action.payload);
       return {
         ...state,
         error: true,

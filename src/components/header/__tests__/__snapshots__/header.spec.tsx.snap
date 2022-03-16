@@ -7,7 +7,7 @@ exports[`<Header /> test utils should match snapshot 1`] = `
   >
     <img
       class="makeStyles-logo-2"
-      src="/assets/images/logo.png"
+      src="/assets/images/ikea-logo.svg"
     />
   </section>
 </DocumentFragment>

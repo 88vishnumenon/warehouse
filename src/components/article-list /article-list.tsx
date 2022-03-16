@@ -11,6 +11,7 @@ import { Warehouse } from "../../store/reducer";
 import WareHouseTable from "../table/table";
 import { getArticles } from "../../services/services";
 import { hideLoading, showLoading } from "../../store/actionCreators";
+import Error from "../error/error";
 
 const useStyles = makeStyles((theme: Theme) => ({
     loadingWrapper: {
@@ -19,16 +20,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: "center",
         height: "40%"
     },
-    error: {
-        color: theme.palette.ikea.ikeaBlue,
-        textAlign: "center"
-    }
+ 
 })
 )
-
-
-
-
 const ArticleList: React.FC<{}> = (props) => {
     //define constants
     const classes = useStyles();
@@ -58,7 +52,6 @@ const ArticleList: React.FC<{}> = (props) => {
         };
     }, []);
     useEffect(() => {
-        console.log("warehouseArticleList", warehouseArticleList);
         let articleDetails: Array<Array<TableData>> = [];
         warehouseArticleList.forEach((article:Article) => {
             let articleRecord: Array<TableData> = [];
@@ -69,9 +62,6 @@ const ArticleList: React.FC<{}> = (props) => {
         setArticleList(articleDetails);
     }, [warehouseArticleList]);
 
-    useEffect(() => {
-        console.log("articleList", articleList);
-    }, [articleList]);
 
     //helperfunctions
     const setArticle = (articleAttr: string | number) => {
@@ -87,7 +77,7 @@ const ArticleList: React.FC<{}> = (props) => {
                 <CircularProgress />
 
             </section>}
-            {error && <h1 data-testid="error" className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
+            {error && <section ><Error></Error></section>}
 
             </section>
 

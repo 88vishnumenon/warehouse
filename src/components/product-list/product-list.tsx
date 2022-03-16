@@ -7,15 +7,15 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from "axios";
-
 import { makeStyles } from '@material-ui/styles';
 import { Chip, CircularProgress, Theme } from '@mui/material';
 import { getArticles, getProducts } from "../../services/services";
 import { useDispatch, useSelector } from "react-redux";
+
 import { Article, Product, ProductArticle } from "../../types/types";
 import { Warehouse } from "../../store/reducer";
 import { hideLoading, showLoading } from "../../store/actionCreators";
-
+import Error from "../error/error";
 
 const useStyles = makeStyles((theme: Theme) => ({
     productListWrapper:{
@@ -27,19 +27,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems:"center",
         height:"20%"
     },
-
-    error:{
-        color:theme.palette.ikea.ikeaBlue,
-        textAlign:"center"
-    },
     articleChip:{
         marginLeft:theme.mixins.pxToRem(10)
     }
 })
 );
 
-// naming should be changes
-// this is the interface for products with articles
+
 interface ProductArtcile{
     name:string,
     articles: Array<PArticle>
@@ -84,7 +78,6 @@ const ProductList: React.FC<{}> = (props) => {
 
 
     useEffect(() => {
-      //  console.log("@@@@@@@", warehouseProductList);
         if (warehouseProductList.length && warehouseArticleList.length ){
             mapProductArticle(warehouseProductList, warehouseArticleList)
         }
@@ -112,14 +105,13 @@ const ProductList: React.FC<{}> = (props) => {
             }
             ProductArtcileDetails.push(productArticle);
         })
-       // console.log("!@!@", ProductArtcileDetails);
         setProductArticleList(ProductArtcileDetails)
     }
 
     const findArticle = (productArticle: Array<ProductArticle>, articleList: Array<Article>) =>{
         const PArticleList:Array < PArticle > = [];
         productArticle.forEach((productarticle: ProductArticle)=>{
-            const article = articleList.find(article => article.id === productarticle.id )
+            const article = articleList.find(article => article.id === productarticle.id );
             const productArticle: PArticle={
                 name: article?.name,
                 amountRequired: productarticle.amountRequired
@@ -134,15 +126,12 @@ const ProductList: React.FC<{}> = (props) => {
         return `${productArticleValue.name} - ${productArticleValue.amountRequired}`;
     }
 
-     // To do: change aria controls and id name
     return (
         <section  className={classes.productListWrapper}>
             {(!loading && !error && productArticleList.length>0) && productArticleList.map((product: ProductArtcile,index:number)=>{
                return  <Accordion  key={index}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
                         data-testid="product-accordian"
                     >
                         <Typography>{product.name}</Typography>
@@ -167,7 +156,7 @@ const ProductList: React.FC<{}> = (props) => {
 
             </section>}
 
-            {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
+            {error && <section><Error></Error></section>}
   
             </section>
 
@@ -175,8 +164,4 @@ const ProductList: React.FC<{}> = (props) => {
 }
 
 export default ProductList;
-{/* <Typography key={index}>
-    {productarticle.name}-{productarticle.amountRequired}
-</Typography> */}
 
-//git remote set - url origin git @github.com: 88vishnumenon / ikea - warehouse.git

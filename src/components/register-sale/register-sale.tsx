@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     saleInputs:{
-        marginBottom: "20px !important"   // to be changed
+        marginBottom: "20px !important"  
     },
     error: {
         color: theme.palette.ikea.ikeaBlue,
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor:"#0058A3 !important",
         width:"98%",
         "&:disabled": {
-            backgroundColor: "#fafafa !important"  // to be changed
+            backgroundColor: "#fafafa !important"  
         }     
     },
     input: {
@@ -80,7 +80,7 @@ const RegisterSale: React.FC<{}> = (props) => {
     }
     const [types, setTypes] = useState<Array<string>>([]);
     const [itemTypes, setItemTypes] = useState<Array<SaleItem>>([]);
-    const [selectedType, setSelectedType] = useState<string>('');
+    const [selectedType, setSelectedType] = useState<string>("");
     const [selectedItem, setSelectedItem] = useState<SaleItem >(defaultSelectedItem);
     const [amount, setAmount] = useState<string>("");
 
@@ -94,9 +94,7 @@ const RegisterSale: React.FC<{}> = (props) => {
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
     const warehouseStockUpdated: boolean = useSelector<Warehouse, Warehouse["stockUpdated"]>((state => state.stockUpdated));
 
-
-
-
+    
     //effects
     useEffect(() => {
         getProductsandArticles();
@@ -115,7 +113,8 @@ const RegisterSale: React.FC<{}> = (props) => {
     }, [warehouseStockUpdated])
 
     useEffect(() => {
-       // setSelectedItem(defaultSelectedItem);
+        setSelectedItem(defaultSelectedItem);
+        if(!selectedType)return;
         const itemList: Array<SaleItem> = [];
         if (selectedType === "Products") {
             warehouseProductList.forEach((product: Product) => {
@@ -140,14 +139,9 @@ const RegisterSale: React.FC<{}> = (props) => {
     }, [selectedType])
 
 
-   //test
-    useEffect(() => {
-        console.log("selectedItem",selectedItem);
-    }, [selectedItem])
+
 
     //helper function
-
-
     const resetForm = () =>{
         setSelectedType("");
         setSelectedItem(defaultSelectedItem);
@@ -155,17 +149,25 @@ const RegisterSale: React.FC<{}> = (props) => {
     }
 
     const validateSale = () =>{
-        let articlesAvailable = true;
+        let available = true;
+        if (selectedType ==="Products"){
         const selectedProduct:Product[]= warehouseProductList.filter((product:Product)=> product.id === selectedItem.id);
         selectedProduct[0].articles.forEach((productArticle: ProductArticle)=>{
             const selectedArticle = warehouseArticleList.filter((article: Article) => article.id === productArticle.id);
             if (+amount * productArticle.amountRequired > selectedArticle[0].amountInStock){
-                articlesAvailable = false;
+                available = false;
                    return;
             }
         })
-        return articlesAvailable?true:false;
-       // return true;
+    }
+    else{
+            const selectedArticle: Article[] = warehouseArticleList.filter((article: Article) => article.id === selectedItem.id);
+            if(selectedArticle[0].amountInStock < +amount){
+                available = false;
+                return ;
+            }
+    }
+        return available?true:false;
     }
 
 
@@ -179,7 +181,6 @@ const RegisterSale: React.FC<{}> = (props) => {
 
     }
     const registerSale = () => {
-        // create a  validate sale function
         if (validateSale()){
             dispatch(showLoading())
             if (selectedType === "Products") {
@@ -191,12 +192,11 @@ const RegisterSale: React.FC<{}> = (props) => {
             }
         }
         else{
-            toast.error("There is Less Articles in the Warehouse");   
+            toast.error("The Warehouse Does Not Have Enough Articles to Make This Sale");   
         }
      
     }
 
-      // to do validations
     return (
         <section className={classes.registerSaleWrapper} >
         {  <form className={classes.registerSaleForm}>
@@ -207,6 +207,7 @@ const RegisterSale: React.FC<{}> = (props) => {
                 options={types}
                 className={classes.saleInputs}
                 sx={{ width: 300 }}
+                data-testid="sale-types"
                 disabled={loading}
                 renderInput={(params) => <TextField {...params} label="Type" />}
             />
@@ -218,57 +219,35 @@ const RegisterSale: React.FC<{}> = (props) => {
                     options={itemTypes}
                     className={classes.saleInputs}
                     sx={{ width: 300 }}
+                    data-testid="sale-item-types"
                     disabled={loading}
                     loading={!warehouseArticleList.length && !error}
                     renderInput={(params) => <TextField {...params} label="Items" />}
                 />
-{/* 
-                <TextField
-                    id="outlined-number"
-                    label="Amount"
-                    className={classes.saleInputs}
-                    value={amount}
-                    type="amount"
-                    onChange={(event) => setAmount(event.target.value)}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    InputProps={{ className: classes.textInput }}
-
-                    
-                /> */}
 
 
                 <TextField
-                    id="outlined-number"
-                    variant="outlined"
+                    id="amount"
+                    type="number"
                     className={classes.saleInputs}
                     label="Amount"
                     value={amount}
-                    type="amount"
                     disabled={loading}
+                    data-testid="amount"
                     onChange={(event) => setAmount(event.target.value)}
-                    inputProps={{
-                        className: classes.input
-                    }}
+                    InputProps={{ inputProps: { min: 1 } }}
                 />
                 <section className={classes.btnLoadingWrapper}>
-                <Button className={classes.submitBtn} disabled={!selectedType || !selectedItem.label || !amount || loading} variant="contained" onClick={registerSale}>Submit</Button>
+                <Button  data-testid ="submit-btn"className={classes.submitBtn} disabled={!selectedType || !selectedItem.label || !amount || loading} variant="contained" onClick={registerSale}>Submit</Button>
                    { loading && <section className={classes.loadingCircleWrapper}>
                         <CircularProgress size={25} />
                     </section>}
                 </section>
             </form>}
-
-    
-
-            {/* {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>} */}
-
             </section>
 
     );
 }
 
 export default RegisterSale;
-// git remote set-url origin https://github.com/88vishnumenon/warehouse.git
 

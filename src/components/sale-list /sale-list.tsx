@@ -11,6 +11,7 @@ import { Warehouse } from "../../store/reducer";
 import { Product, Sale, TableData } from "../../types/types";
 import WareHouseTable from "../table/table";
 import { hideLoading, showLoading } from "../../store/actionCreators";
+import Error from "../error/error";
 
 const useStyles = makeStyles((theme: Theme) => ({
     loadingWrapper: {
@@ -42,8 +43,6 @@ const SaleList: React.FC<{}> = (props) => {
     const error: boolean = useSelector<Warehouse, Warehouse["error"]>((state => state.error));
     const loading: boolean = useSelector<Warehouse, Warehouse["loading"]>((state => state.loading));
 
-
-
     //effects
     useEffect(() => {
     // if we have already the data for sales the dont fetch again
@@ -59,7 +58,6 @@ const SaleList: React.FC<{}> = (props) => {
         };
     }, [])
 
-    //effects
     useEffect(() => {
         let saleDetails: Array<Array<TableData>> = [];
         warehouseSaleList.forEach((sale: Sale) => {
@@ -81,24 +79,24 @@ const SaleList: React.FC<{}> = (props) => {
     };
 
     const formatDate = (dateString:string)=>{
-   
         const dateValue = dateString.split("T")[0];
         const date = new Date(dateValue);
         const yyyy = date.getFullYear();
-        let mm = date.getMonth() + 1; // Months start at 0!
+        let mm = date.getMonth() + 1; 
         let dd = date.getDate();
 
         return `${dd}-${mm}-${yyyy}`
 
     }
     return (
-        <section  >
+        <section>
             {saleList.length>0 &&  <WareHouseTable headers={saleHeaders} data={saleList}></WareHouseTable>}
             {(loading) && <section className={classes.loadingWrapper}>
                 <CircularProgress />
             </section>}
 
-            {error && <h1 className={classes.error}>There Seems To Be a Error.Can You Please Refresh</h1>}
+            {error && <section data-testid="error"><Error></Error></section>}
+
 
         </section>
 

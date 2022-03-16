@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme: Theme) => ({
      menu:{
           borderRadius:4,
           border:"1px solid #eee",
-          backgroundColor:"#fafafa",
-          height:theme.mixins.pxToRem(40),
+          backgroundColor:theme.palette.ikea.lightWheat,
+          height:theme.mixins.pxToRem(25),
           width: theme.mixins.pxToRem(200),
          marginRight: theme.mixins.pxToRem(8),
          display:"flex",
@@ -45,9 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
          color:theme.palette.ikea.ikeaBlue,
          padding:theme.mixins.pxToRem(10),
          '&:hover': {
-           // transform: "translateY(-30px)",
-           // boxShadow: "0 4px 17px rgb(0 0 0 / 35 %)"
-            //  backgroundColor: "red",
+             boxShadow: "0 0 11px rgba(33,33,33,.2)", 
          },
 
         
@@ -59,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
      },
     content: {
         height:"76%",
-        width:"50%"
+        width:"40%"
     }
 })
 )

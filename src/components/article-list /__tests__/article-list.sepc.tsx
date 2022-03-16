@@ -16,20 +16,26 @@ export const MOCK_STATE = {
 
 export const ERROR_MOCK_STATE = {
     articles: [ ],
-    error:true
+    error:true,
+    loading:false
 
 };
 
 
-let mockGetArticles = jest.fn(() => {
-    return jest.fn();
-});
+// let mockGetArticles = jest.fn(() => {
+//     return jest.fn();
+// });
 
-jest.mock('../../../services/services', () => {
-    return function () {
-        return {  getArticles: mockGetArticles };
-    };
-});
+// jest.mock('../../../services/services', () => {
+//     return function () {
+//         return {  getArticles: mockGetArticles };
+//     };
+// });
+
+// const getArticles = jest.fn();
+jest.mock('../../../services/services', () => ({
+    getArticles: jest.fn()
+}));
 
 const renderArticleList = (
     state: {
@@ -50,7 +56,8 @@ describe("<ArticleList /> test utils", () => {
     })
 
     // test("should error text shown on error ", async () => {
-    //     const { findByTestId } = renderArticleList(ERROR_MOCK_STATE);
+    //     const { findByTestId, asFragment } = renderArticleList(ERROR_MOCK_STATE);
+    //     expect(asFragment()).toMatchSnapshot();
     //     const error = await findByTestId('error');
     //     expect(error).toBeInTheDocument();
     // })
