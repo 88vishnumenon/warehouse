@@ -139,6 +139,13 @@ const RegisterSale: React.FC<{}> = (props) => {
     }, [selectedType])
 
 
+    useEffect(() => {
+        if(error){
+            toast.error("There seems to be issue in Making the Sale!!! Can You please try Again.");   
+        }
+    }, [error])
+
+
 
 
     //helper function
