@@ -25,11 +25,12 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 - All components are functional components with react hooks.
 - Redux is used for managing the state of the application.
 - jest and react testing library are used to write the unit test cases for few of the components.  
+- Snapshot testing is added in few components t
 - comments are added to improve readability of code.
 
 
 ### `improvements`
-- As mentioned in the question in my email as per my understanding of requirements  the sale should be based on amountRequired and amountInStock.In the current inventory the articles  is always less than amount required hence sale is not possible.Updating the articles using the patch call the amountInStock is not updated.Hence this functionality is not possible now.In order to showcase how i would have approched the same i have added selling of articles in the Sale section.When a article is  sold a patch article request is called  with aountToSubtract .When the request is sucessfull then corresponding state is updated and this updates the article inventory.This was impelmented to showcase how this usecase can be approached.
+
 
 - All the service end points could not be used.But with more time all diffrent end points could be integrated as diffrent menu and user operations.
 

@@ -66,15 +66,47 @@ export const reducer = (
         stockUpdated: { $set: true },
       });
 
-    case "UPDATE_PRODUCTS":
-      // todo:
-      // logic for updating inventory should be added here.Now as we dont have enough articles to sale the changes are not added here.
-      const aricles = state.articles;
-      return {
-        ...state,
-        stockUpdated: true,
-        loading: false,
-      };
+    case "SOLD_PRODUCT":
+      // updating articles
+      const productSold = state.products.find((product)=>product.id === action.payload.productId) ?? null;
+      if(productSold){
+      const productArticles = productSold.articles;
+      const currentArticleList = state.articles;
+
+       // id array
+      const productArticlesIds = productArticles?.map(article => article.id);
+
+      currentArticleList.forEach((currentArticle)=>{
+          if(productArticlesIds.includes(currentArticle.id)){
+              const amountSold = action.payload.amountSold;
+               const articleAmountRequired = productArticles.filter((productArticle)=>   productArticle.id === currentArticle.id)[0].amountRequired;
+               currentArticle.amountInStock =
+                 currentArticle.amountInStock = (currentArticle.amountInStock - +amountSold * articleAmountRequired);
+          }
+      })
+
+      // updating sales list
+      const salesList = state.sales;
+      salesList.push({
+        id: action.payload.id,
+        createdAt: action.payload.createdAt,
+        productId: action.payload.productId,
+        amountSold: action.payload.amountSold,
+      });
+
+
+    
+       return update(state, {
+         articles: { $set: currentArticleList },
+         sales:{$set:salesList},
+         loading: { $set: false },
+         error: { $set: false },
+         stockUpdated: { $set: true },
+       });
+    }
+    else{
+      return {state}
+    }
 
     case "SHOW_LOADING":
       return {

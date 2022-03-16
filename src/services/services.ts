@@ -1,7 +1,7 @@
 import axios from "../shared/interceptor";
 import { Dispatch } from "react";
 import {Action} from "../store/reducer"
-import { addArticles, addProducts, addSales, showError, updateArticles, updateProduct } from "../store/actionCreators";
+import { addArticles, addProducts, addSales, showError, updateArticles,soldProduct } from "../store/actionCreators";
 
 export const getProducts = (dispatch: Dispatch<Action>, cancelToken:any) => {
   axios
@@ -44,7 +44,7 @@ export const sellProduct = (dispatch: Dispatch<Action>, cancelToken: any,product
   axios
     .post(`/sales/`, { cancelToken, productId, amountSold })
     .then((response) => {
-      dispatch(updateProduct(response.data));
+      dispatch(soldProduct(response.data));
     })
     .catch((error) => {
       // not showing the error when the error is of cancelled request

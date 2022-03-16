@@ -25,3 +25,10 @@ export interface Sale {
 export interface TableData {
   value: string | number;
 }
+
+export interface ProductSold {
+  id: string;
+  createdAt: string;
+  productId: string;
+  amountSold: number;
+}

@@ -6,9 +6,9 @@ import { makeStyles } from '@material-ui/styles';
 import { Theme,CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from "react-redux";
 
-import { getSales } from "../../services/services";
+import { getArticles, getProducts, getSales } from "../../services/services";
 import { Warehouse } from "../../store/reducer";
-import { Product, Sale, TableData } from "../../types/types";
+import { Article, Product, Sale, TableData } from "../../types/types";
 import WareHouseTable from "../table/table";
 import { hideLoading, showLoading } from "../../store/actionCreators";
 import Error from "../error/error";
@@ -37,6 +37,7 @@ const SaleList: React.FC<{}> = (props) => {
     const source = cancelToken.source();
     const [saleHeaders, setSaleHeaders] = useState<Array<string>>(["DATE","PRODUCT TYPE" ,"AMOUNT SOLD"]);
     const [saleList, setSaleList] = useState<Array<Array<TableData>>>([]);
+    const [saleListUpdated,setSalesListUpdated] = useState<boolean>(false);
 
     const warehouseSaleList: Array<Sale> = useSelector<Warehouse, Warehouse["sales"]>((state => state.sales));
     const warehouseProductList: Array<Product> = useSelector<Warehouse, Warehouse["products"]>((state => state.products));
@@ -50,6 +51,10 @@ const SaleList: React.FC<{}> = (props) => {
             dispatch(showLoading());
             getSales(dispatch, source.token);
         }
+        if ((!warehouseProductList.length ) || error) {
+            dispatch(showLoading());
+            getProducts(dispatch, source.token);
+        }
 
         return function cleanup() {
             // clean up code
@@ -59,6 +64,7 @@ const SaleList: React.FC<{}> = (props) => {
     }, [])
 
     useEffect(() => {
+        if (!warehouseProductList.length && !warehouseSaleList.length) return;
         let saleDetails: Array<Array<TableData>> = [];
         warehouseSaleList.forEach((sale: Sale) => {
             let saleRecord: Array<TableData> = [];
@@ -69,7 +75,7 @@ const SaleList: React.FC<{}> = (props) => {
             saleDetails.push(saleRecord);
         })
         setSaleList(saleDetails);
-    }, [warehouseSaleList]);
+    }, [warehouseSaleList, warehouseProductList]);
 
     // helper methods
     const setSale = (saleAttr: string | number) => {
@@ -90,8 +96,8 @@ const SaleList: React.FC<{}> = (props) => {
     }
     return (
         <section>
-            {saleList.length>0 &&  <WareHouseTable headers={saleHeaders} data={saleList}></WareHouseTable>}
-            {(loading) && <section className={classes.loadingWrapper}>
+            {(warehouseSaleList.length > 0 && warehouseProductList.length > 0 || (!loading && !error && (warehouseSaleList.length == 0 || warehouseProductList.length === 0))) &&  <WareHouseTable headers={saleHeaders} data={saleList}></WareHouseTable>}
+            {(loading  ) && <section className={classes.loadingWrapper}>
                 <CircularProgress />
             </section>}
 

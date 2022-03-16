@@ -1,4 +1,4 @@
-import { Article, Product, Sale } from "../types/types";
+import { Article, Product, ProductSold, Sale } from "../types/types";
 import * as actionTypes from "./actions";
 
 export const addProducts = (payload: Array<Product>) => {
@@ -23,9 +23,9 @@ export const addSales = (payload: Array<Sale>) => {
   };
 };
 
-export const updateProduct = (payload: Product) => {
+export const soldProduct = (payload: ProductSold) => {
   return {
-    type: actionTypes.UPDATE_PRODUCTS,
+    type: actionTypes.SOLD_PRODUCT,
     payload,
   };
 };
